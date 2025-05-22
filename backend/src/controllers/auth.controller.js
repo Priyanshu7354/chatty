@@ -36,7 +36,11 @@ export const signup = async (req, res) => {
         _id: newUser._id,
         fullName: newUser.fullName,
         email: newUser.email,
+<<<<<<< HEAD
         mobile: newUser.mobile,
+=======
+        mobile:newUser.mobile,
+>>>>>>> 6e9b1bce7573155a3ec3e298b57a1cb856a08902
         profilePic: newUser.profilePic,
       });
     } else {
