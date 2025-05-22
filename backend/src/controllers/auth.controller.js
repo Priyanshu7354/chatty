@@ -4,9 +4,9 @@ import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
-  const { fullName, email, password } = req.body;
+  const { fullName, email, mobile, password } = req.body;
   try {
-    if (!fullName || !email || !password) {
+    if (!fullName || !email || !password || !mobile) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -24,11 +24,11 @@ export const signup = async (req, res) => {
     const newUser = new User({
       fullName,
       email,
+      mobile,
       password: hashedPassword,
     });
 
     if (newUser) {
-      // generate jwt token here
       generateToken(newUser._id, res);
       await newUser.save();
 
@@ -36,6 +36,7 @@ export const signup = async (req, res) => {
         _id: newUser._id,
         fullName: newUser.fullName,
         email: newUser.email,
+        mobile: newUser.mobile,
         profilePic: newUser.profilePic,
       });
     } else {
@@ -113,6 +114,16 @@ export const checkAuth = (req, res) => {
     res.status(200).json(req.user);
   } catch (error) {
     console.log("Error in checkAuth controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, 'fullName email').exec();
+    res.status(200).json(users);
+  } catch (error) {
+    console.log("Error in getAllUsers controller", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
